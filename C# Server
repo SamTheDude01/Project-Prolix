@@ -1,0 +1,93 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Net;
+using System.Net.Sockets;
+using System.IO;
+
+
+namespace Project_Prolix_Server
+{
+    class Programe
+    {
+        static void Main(string[] args)
+        {
+            //Variables
+            bool MainSocketSetupSucsessfull = true;
+            
+
+            //Holds The Ammount of Data Bieng Sent
+            int RecvAmmount;
+
+            //Where the send or recive data is held.
+            byte[] SendData = new byte[1024];
+            byte[] RecvData = new byte[1024];
+
+            //This Section Sets Up The Server's Concections, Socket And It's Protocol.
+            Console.Write(DateTime.Now);
+            Console.WriteLine(": Setting Up The Server's Connections...");
+
+            //Creation of the acceptable IP Adresses.
+            IPEndPoint ipendpoint = new IPEndPoint(IPAddress.Any, 3548);
+            Console.Write(DateTime.Now);
+            Console.WriteLine(": Created IPEndPoint...");
+
+
+            //Makeing The New Socket.
+            //This Makes The Socket And Sets Up The Protocol Type To Tcp.
+
+            try
+            {
+                //Socket MainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Tcp);
+                //MainSocketSetupSucsessfull = true;
+            }
+            catch(Exception e)
+            {
+                MainSocketSetupSucsessfull = false;
+                Console.Write(DateTime.Now);
+                Console.WriteLine(": Failed To Setup The Main Socket");
+                Console.Write(DateTime.Now);
+                Console.WriteLine(": ", e);
+            }
+            if (MainSocketSetupSucsessfull == true)
+            {
+                Console.Write(DateTime.Now);
+                Console.WriteLine(": Created Main Socket...");
+            }
+            Socket MainSocket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Tcp);
+
+
+            //This Makes The Socket Bind To The IPEndPoint Created Ealier.
+            MainSocket.Bind(ipendpoint);
+            Console.Write(DateTime.Now);
+            Console.WriteLine(": Bound IPEndPoint To Main Socket...");
+            Console.Write(DateTime.Now);
+            Console.WriteLine(": Setup complete.");
+
+            //This Section Listens For The Client On The Port Created Earlier.
+            Console.Write(DateTime.Now);
+            Console.WriteLine(": Waiting For A Client...");
+
+            //Makes A New IPEndPoint For The Sender's Address.
+            IPEndPoint Client = new IPEndPoint(IPAddress.Any, 3548);
+            Console.Write(DateTime.Now);
+            Console.WriteLine(": Client Connecting. (YAY!)");
+
+            //Stores The Clients Address Into The tmpRemote Variable. 
+            EndPoint tmpRemote = (EndPoint)Client;
+            Console.Write(DateTime.Now);
+            Console.WriteLine(": Stored Clients Address.");
+
+            //Decodes The Tcp Message
+            RecvAmmount = MainSocket.ReceiveFrom(RecvData, ref tmpRemote);
+            Console.Write(DateTime.Now);
+            Console.WriteLine(": Message Recived From {0}", tmpRemote.ToString());
+            Console.Write(DateTime.Now);
+            Console.WriteLine(": ", Encoding.ASCII.GetString(RecvData, 0, RecvAmmount));
+
+        }
+
+    }
+}
